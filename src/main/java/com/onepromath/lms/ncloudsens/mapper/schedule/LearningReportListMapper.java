@@ -25,7 +25,9 @@ public interface LearningReportListMapper {
             "            limit 18446744073709551615) t1\n" +
             "      group by LOGIN_ID_NO) lia\n" +
             "         left join LOGIN_ID li on li.NO = lia.LOGIN_ID_NO\n" +
-            "where li.phone is not null\n" +
+            "where li.use_yn = 'y'\n" +
+            "  and li.school_id_yn = 'n'\n" +
+            "  and li.phone is not null\n" +
             "  and replace(replace(li.phone, '-', ''), ' ', '') != ''\n" +
             "  and char_length(replace(replace(li.phone, '-', ''), ' ', '')) = 11\n" +
             "group by replace(li.phone, '-', ''), li.NO;")
@@ -47,7 +49,8 @@ public interface LearningReportListMapper {
             "  and li.use_yn = 'y'\n" +
             "  and li.phone is not null\n" +
             "  and replace(replace(li.phone, '-', ''), ' ', '') != ''\n" +
-            "  and char_length(replace(replace(li.phone, '-', ''), ' ', '')) = 11;")
+            "  and char_length(replace(replace(li.phone, '-', ''), ' ', '')) = 11\n" +
+            "group by replace(li.phone, '-', ''), lip.NO;")
     @Results(id = "promo3DayMonthlyReportListMap", value = {
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "profileNumber", column = "profile_number")

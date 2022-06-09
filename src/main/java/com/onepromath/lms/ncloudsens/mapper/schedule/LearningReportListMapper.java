@@ -44,7 +44,7 @@ public interface LearningReportListMapper {
             "         left join LOGIN_ID li on li.NO = promo.LOGIN_ID_NO\n" +
             "         left join LOGIN_ID_PROFILE lip on li.NO = lip.LOGIN_ID_NO\n" +
             "where promo.show_yn = 'y'\n" +
-            "  and date_format(promo.end_date, '%Y-%m-%d') = date_format(date_add(now(), interval +1 day), '%Y-%m-%d')\n" +
+            "  and date_format(promo.end_date, '%Y-%m-%d') = date_format(date_add(now(), interval 1 day), '%Y-%m-%d')\n" +
             "  and li.school_id_yn = 'n'\n" +
             "  and li.use_yn = 'y'\n" +
             "  and li.phone is not null\n" +

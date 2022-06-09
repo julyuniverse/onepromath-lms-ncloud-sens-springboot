@@ -68,12 +68,6 @@ public class AlimtalkService { // 알림톡 서비스
     @Value("${ncloud.alimtalk.promo3DayMonthlyReport.messages.content2}")
     private String promo3DayMonthlyReportContent2;
 
-    @Value("${ncloud.alimtalk.promo3DayMonthlyReport.messages.failoverConfig.content1}")
-    private String promo3DayMonthlyReportFailoverConfigContent1;
-
-    @Value("${ncloud.alimtalk.promo3DayMonthlyReport.messages.failoverConfig.content2}")
-    private String promo3DayMonthlyReportFailoverConfigContent2;
-
     private final AlimtalkMapper alimtalkMapper;
 
     public AlimtalkService(AlimtalkMapper alimtalkMapper) {
@@ -86,7 +80,7 @@ public class AlimtalkService { // 알림톡 서비스
 
         AlimtalkRequestFailoverConfig alimtalkRequestFailoverConfig = new AlimtalkRequestFailoverConfig(this.paidAcctMonthlyReportFailoverConfigContent1 + url + this.paidAcctMonthlyReportFailoverConfigContent2);
         List<AlimtalkRequestMessages> alimtalkRequestMessages = new ArrayList<>();
-        alimtalkRequestMessages.add(new AlimtalkRequestMessages(this.countryCode, phoneNumber, this.paidAcctMonthlyReportContent1 + url + this.paidAcctMonthlyReportContent2, alimtalkRequestFailoverConfig));
+        alimtalkRequestMessages.add(new AlimtalkRequestMessages(this.countryCode, phoneNumber, this.paidAcctMonthlyReportContent1 + url + this.paidAcctMonthlyReportContent2, true, alimtalkRequestFailoverConfig));
         AlimtalkRequestBody alimtalkRequestBody = new AlimtalkRequestBody(this.paidAcctMonthlyReportTemplateCode, this.plusFriendId, alimtalkRequestMessages);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -113,9 +107,9 @@ public class AlimtalkService { // 알림톡 서비스
     public AlimtalkResultResponseBody sendPromo3DayMonthlyReport(String phoneNumber, String profileNumber, String url) throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, URISyntaxException {
         Long time = System.currentTimeMillis();
 
-        AlimtalkRequestFailoverConfig alimtalkRequestFailoverConfig = new AlimtalkRequestFailoverConfig(this.promo3DayMonthlyReportFailoverConfigContent1 + url + this.promo3DayMonthlyReportFailoverConfigContent2);
+        AlimtalkRequestFailoverConfig alimtalkRequestFailoverConfig = new AlimtalkRequestFailoverConfig();
         List<AlimtalkRequestMessages> alimtalkRequestMessages = new ArrayList<>();
-        alimtalkRequestMessages.add(new AlimtalkRequestMessages(this.countryCode, phoneNumber, this.promo3DayMonthlyReportContent1 + url + this.promo3DayMonthlyReportContent2, alimtalkRequestFailoverConfig));
+        alimtalkRequestMessages.add(new AlimtalkRequestMessages(this.countryCode, phoneNumber, this.promo3DayMonthlyReportContent1 + url + this.promo3DayMonthlyReportContent2, false, alimtalkRequestFailoverConfig));
         AlimtalkRequestBody alimtalkRequestBody = new AlimtalkRequestBody(this.promo3DayMonthlyReportTemplateCode, this.plusFriendId, alimtalkRequestMessages);
 
         ObjectMapper objectMapper = new ObjectMapper();

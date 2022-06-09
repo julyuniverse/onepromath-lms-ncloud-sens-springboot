@@ -47,9 +47,9 @@ public class LearningReportListService { // 학습 보고서 목록 스케줄 �
             String url = "http://일프로선생님.kr/monthlyreport/21/" + userNumber + "/" + profileNumber + "/" + year + "/" + month + "";
             AlimtalkResultResponseBody alimtalkResultResponseBody = alimtalkService.sendPaidAcctMonthlyReport(paidAcctMonthlyReportListDto.getPhoneNumber(), paidAcctMonthlyReportListDto.getUserNumber(), paidAcctMonthlyReportListDto.getProfileNumber(), url);
 
-            if(Objects.equals(alimtalkResultResponseBody.getRequestStatusName(), "success")) {
+            if (Objects.equals(alimtalkResultResponseBody.getRequestStatusName(), "success")) {
                 successCount++;
-            }else{
+            } else {
                 failCount++;
             }
         }
@@ -75,9 +75,9 @@ public class LearningReportListService { // 학습 보고서 목록 스케줄 �
             String url = "http://일프로선생님.kr/monthlyreport/32/0/" + profileNumber + "/" + year + "/" + month + "";
             AlimtalkResultResponseBody alimtalkResultResponseBody = alimtalkService.sendPromo3DayMonthlyReport(promo3DayMonthlyReportListDto.getPhoneNumber(), promo3DayMonthlyReportListDto.getProfileNumber(), url);
 
-            if(Objects.equals(alimtalkResultResponseBody.getRequestStatusName(), "success")) {
+            if (Objects.equals(alimtalkResultResponseBody.getRequestStatusName(), "success")) {
                 successCount++;
-            }else{
+            } else {
                 failCount++;
             }
         }

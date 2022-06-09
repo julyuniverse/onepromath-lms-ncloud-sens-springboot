@@ -17,3 +17,6 @@
     - Apache HttpClient (https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient, pom.xml 파일에 직접 추가)
 
 ## Update log
+- 2022-06-09
+  - logback
+    - Spring boot에 내장된 logback을 활용하여 로그 저장

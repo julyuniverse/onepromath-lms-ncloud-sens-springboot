@@ -2,7 +2,7 @@ package com.onepromath.lms.ncloudsens.dto.alimtalk.result.response;
 
 import lombok.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter

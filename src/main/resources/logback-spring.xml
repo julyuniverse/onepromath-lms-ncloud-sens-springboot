@@ -2,8 +2,8 @@
 <!-- 15초마다 설정 파일의 변경을 확인하여 변경 시 갱신 -->
 <configuration scan="true" scanPeriod="15 seconds">
     <!-- Server Log Config -->
-    <springProfile name="lms">
-        <property resource="application-lms.properties"/>
+    <springProfile name="onepromath">
+        <property resource="application-onepromath.properties"/>
         <!-- log file path -->
         <property name="LOG_PATH" value="${log.config.path}"/>
         <!-- log file name -->

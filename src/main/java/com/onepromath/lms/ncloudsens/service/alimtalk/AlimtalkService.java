@@ -75,7 +75,7 @@ public class AlimtalkService { // 알림톡 서비스
     }
 
     // 유료 계정 월간 보고서 알림톡 발송
-    public AlimtalkResultResponseBody sendPaidAcctMonthlyReport(String phoneNumber, String userNumber, String profileNumber, String url) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
+    public AlimtalkResultResponseBody sendPaidAcctMonthlyReport(String phoneNumber, String url) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
         Long time = System.currentTimeMillis();
 
         AlimtalkRequestFailoverConfig alimtalkRequestFailoverConfig = new AlimtalkRequestFailoverConfig(this.paidAcctMonthlyReportFailoverConfigContent1 + url + this.paidAcctMonthlyReportFailoverConfigContent2);
@@ -104,7 +104,7 @@ public class AlimtalkService { // 알림톡 서비스
     }
 
     // 프로모션 3일차 월간 보고서 알림톡 발송
-    public AlimtalkResultResponseBody sendPromo3DayMonthlyReport(String phoneNumber, String profileNumber, String url) throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, URISyntaxException {
+    public AlimtalkResultResponseBody sendPromo3DayMonthlyReport(String phoneNumber, String url) throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, URISyntaxException {
         Long time = System.currentTimeMillis();
 
         AlimtalkRequestFailoverConfig alimtalkRequestFailoverConfig = new AlimtalkRequestFailoverConfig();

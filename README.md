@@ -20,3 +20,9 @@
 - 2022-06-09
   - logback
     - Spring boot에 내장된 logback을 활용하여 로그 저장
+- 2022-07-13
+  - 변경된 LMS에 맞춰서 알림톡 발송 로직 수정
+  - 로그 내역에 찍힌 경고 메시지
+    - WARN 22-07-13 12:00:00 [scheduling-1] [PoolBase-isConnectionAlive:184] - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7868749e (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+    - application-###-properties 파일에 hikari 설정 추가
+      - mysql의 wait_timeout을 세션으로 설정하고 hikari의 max-lifetime을 mysql의 wait_timeout 보다 10초 적게 설정

@@ -59,6 +59,21 @@ public class AlimtalkService { // 알림톡 서비스
     @Value("${ncloud.alimtalk.paidAcctMonthlyReport.messages.failoverConfig.content2}")
     private String paidAcctMonthlyReportFailoverConfigContent2;
 
+    @Value("${ncloud.alimtalk.paidAcctOneMonthMonthlyReport.templateCode}")
+    private String paidAcctOneMonthMonthlyReportTemplateCode;
+
+    @Value("${ncloud.alimtalk.paidAcctOneMonthMonthlyReport.messages.content1}")
+    private String paidAcctOneMonthMonthlyReportContent1;
+
+    @Value("${ncloud.alimtalk.paidAcctOneMonthMonthlyReport.messages.content2}")
+    private String paidAcctOneMonthMonthlyReportContent2;
+
+    @Value("${ncloud.alimtalk.paidAcctOneMonthMonthlyReport.messages.failoverConfig.content1}")
+    private String paidAcctOneMonthMonthlyReportFailoverConfigContent1;
+
+    @Value("${ncloud.alimtalk.paidAcctOneMonthMonthlyReport.messages.failoverConfig.content2}")
+    private String paidAcctOneMonthMonthlyReportFailoverConfigContent2;
+
     @Value("${ncloud.alimtalk.promo3DayMonthlyReport.templateCode}")
     private String promo3DayMonthlyReportTemplateCode;
 
@@ -82,6 +97,35 @@ public class AlimtalkService { // 알림톡 서비스
         List<AlimtalkRequestMessages> alimtalkRequestMessages = new ArrayList<>();
         alimtalkRequestMessages.add(new AlimtalkRequestMessages(this.countryCode, phoneNumber, this.paidAcctMonthlyReportContent1 + url + this.paidAcctMonthlyReportContent2, true, alimtalkRequestFailoverConfig));
         AlimtalkRequestBody alimtalkRequestBody = new AlimtalkRequestBody(this.paidAcctMonthlyReportTemplateCode, this.plusFriendId, alimtalkRequestMessages);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonBody = objectMapper.writeValueAsString(alimtalkRequestBody);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x-ncp-apigw-timestamp", time.toString());
+        headers.set("x-ncp-iam-access-key", this.accessKey);
+        String signature = makeSendSignature(time);
+        headers.set("x-ncp-apigw-signature-v2", signature);
+
+        HttpEntity<String> body = new HttpEntity<>(jsonBody, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        AlimtalkResponseBody alimtalkResponseBody = restTemplate.postForObject(new URI("https://sens.apigw.ntruss.com/alimtalk/v2/services/" + this.serviceId + "/messages"), body, AlimtalkResponseBody.class);
+        AlimtalkResultResponseBody alimtalkResultResponseBody = sendResult(alimtalkResponseBody.getMessages().get(0).getMessageId());
+
+        return alimtalkResultResponseBody;
+    }
+
+    // 유료 계정 월간 보고서 1개월 경고 알림 내용 추가 알림톡 발송(안내 내용: 지난 연속 2개월 학습 데이터가 없으면 월간 보고서가 발송되지 않는다.)
+    public AlimtalkResultResponseBody sendPaidAcctOneMonthMonthlyReport(String phoneNumber, String url) throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, URISyntaxException {
+        Long time = System.currentTimeMillis();
+
+        AlimtalkRequestFailoverConfig alimtalkRequestFailoverConfig = new AlimtalkRequestFailoverConfig(this.paidAcctOneMonthMonthlyReportFailoverConfigContent1 + url + this.paidAcctOneMonthMonthlyReportFailoverConfigContent2);
+        List<AlimtalkRequestMessages> alimtalkRequestMessages = new ArrayList<>();
+        alimtalkRequestMessages.add(new AlimtalkRequestMessages(this.countryCode, phoneNumber, this.paidAcctOneMonthMonthlyReportContent1 + url + this.paidAcctOneMonthMonthlyReportContent2, true, alimtalkRequestFailoverConfig));
+        AlimtalkRequestBody alimtalkRequestBody = new AlimtalkRequestBody(this.paidAcctOneMonthMonthlyReportTemplateCode, this.plusFriendId, alimtalkRequestMessages);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonBody = objectMapper.writeValueAsString(alimtalkRequestBody);

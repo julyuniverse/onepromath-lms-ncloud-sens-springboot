@@ -26,3 +26,10 @@
     - WARN 22-07-13 12:00:00 [scheduling-1] [PoolBase-isConnectionAlive:184] - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7868749e (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
     - application-###-properties 파일에 hikari 설정 추가
       - mysql의 wait_timeout을 세션으로 설정하고 hikari의 max-lifetime을 mysql의 wait_timeout 보다 10초 적게 설정
+- 2022-07-14
+  - 학습 데이터 유무로 월간 보고서 발송 여부 로직
+    - 현재
+      - 매월 1일 전월의 월간 보고서 발송
+    - 변경
+      - 지난 1개월 차 학습 데이터가 없다면 지난 연속 2개월 학습 데이터가 없으면 월간 보고서가 발송되지 않는다는 내용을 알림톡에 추가
+      - 지난 2개월 연속 학습 데이터가 없다면 알림톡 발송 X

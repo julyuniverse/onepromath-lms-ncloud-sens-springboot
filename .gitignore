@@ -37,3 +37,6 @@ application-onepromath.properties
 
 ### logs ###
 /logs/
+
+### Apple - Desktop Services Store ###
+.DS_Store

@@ -68,15 +68,17 @@ public class LearningReportService { // 학습 보고서 스케줄 서비스
                 } else {
                     failCount++;
                 }
-            } else { // 나머지는 알림톡 발송 X (2022년 7월 21일 현시점으로 2개월 연속으로 데이터가 없는 계정이 있을 수도 있다. 2개월 연속 데이터가 없는 계정은 1개월 경고 알림 내용 알림톡 자체를 받을 수 없다. 그러므로 새로운 로직으로 변경 시 1회만 발송하도록 하고 해당 else문 로직은 2022년 8월 1일 발송 이후 삭제해야 함.)
-                AlimtalkResultResponseBody alimtalkResultResponseBody = alimtalkService.sendPaidAcctOneMonthMonthlyReport(learningReportDto.getPhoneNumber(), url);
-
-                if (Objects.equals(alimtalkResultResponseBody.getRequestStatusName(), "success")) {
-                    successCount++;
-                } else {
-                    failCount++;
-                }
             }
+
+//            else { // 나머지는 알림톡 발송 X (2022년 7월 21일 현시점으로 2개월 연속으로 데이터가 없는 계정이 있을 수도 있다. 2개월 연속 데이터가 없는 계정은 1개월 경고 알림 내용 알림톡 자체를 받을 수 없다. 그러므로 새로운 로직으로 변경 시 1회만 발송하도록 하고 해당 else문 로직은 2022년 8월 1일 발송 이후 삭제해야 함.)
+//                AlimtalkResultResponseBody alimtalkResultResponseBody = alimtalkService.sendPaidAcctOneMonthMonthlyReport(learningReportDto.getPhoneNumber(), url);
+//
+//                if (Objects.equals(alimtalkResultResponseBody.getRequestStatusName(), "success")) {
+//                    successCount++;
+//                } else {
+//                    failCount++;
+//                }
+//            }
 
             totalCount++;
         }

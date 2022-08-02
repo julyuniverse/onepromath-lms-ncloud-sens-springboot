@@ -2,12 +2,12 @@ package com.onepromath.lms.ncloudsens.service.alimtalk;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onepromath.lms.ncloudsens.RestTemplateResponseErrorHandler;
 import com.onepromath.lms.ncloudsens.dto.alimtalk.request.AlimtalkRequestBody;
 import com.onepromath.lms.ncloudsens.dto.alimtalk.request.AlimtalkRequestFailoverConfig;
 import com.onepromath.lms.ncloudsens.dto.alimtalk.request.AlimtalkRequestMessages;
 import com.onepromath.lms.ncloudsens.dto.alimtalk.response.AlimtalkResponseBody;
 import com.onepromath.lms.ncloudsens.dto.alimtalk.result.response.AlimtalkResultResponseBody;
-import com.onepromath.lms.ncloudsens.mapper.AlimtalkMapper;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -82,12 +82,6 @@ public class AlimtalkService { // 알림톡 서비스
 
     @Value("${ncloud.alimtalk.promo3DayMonthlyReport.messages.content2}")
     private String promo3DayMonthlyReportContent2;
-
-    private final AlimtalkMapper alimtalkMapper;
-
-    public AlimtalkService(AlimtalkMapper alimtalkMapper) {
-        this.alimtalkMapper = alimtalkMapper;
-    }
 
     // 유료 계정 월간 보고서 알림톡 발송
     public AlimtalkResultResponseBody sendPaidAcctMonthlyReport(String phoneNumber, String url) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
@@ -179,15 +173,14 @@ public class AlimtalkService { // 알림톡 서비스
     // 알림톡 발송 결과
     public AlimtalkResultResponseBody sendResult(String messageId) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         Long time = System.currentTimeMillis();
-
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-ncp-apigw-timestamp", time.toString());
         headers.set("x-ncp-iam-access-key", this.accessKey);
         String signature = makeSendResultSignature(time, messageId);
         headers.set("x-ncp-apigw-signature-v2", signature);
-
         HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler()); // ResponseErrorHandler 인터페이스를 재 구현한 클래스로 설정
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         ResponseEntity<AlimtalkResultResponseBody> responseEntity = restTemplate.exchange(
                 "https://sens.apigw.ntruss.com/alimtalk/v2/services/" + this.serviceId + "/messages/" + messageId,
@@ -195,6 +188,43 @@ public class AlimtalkService { // 알림톡 서비스
                 httpEntity,
                 AlimtalkResultResponseBody.class
         );
+
+        int httpStatusCodeValue = responseEntity.getStatusCodeValue();
+
+        if (httpStatusCodeValue != 200) { // 요청 성공이 아니라면
+            int count = 0;
+
+            while (count < 10) { // 요청을 최대 10번까지만 설정
+                try {
+                    Thread.sleep(1000); // 1초 대기 (총 Thread.sleep은 mysql wait_timeout보다 작도록 설정. ex] 4X10=40 < wait_timeout=40 = 에러 발생)
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                time = System.currentTimeMillis();
+                headers = new HttpHeaders();
+                headers.set("x-ncp-apigw-timestamp", time.toString());
+                headers.set("x-ncp-iam-access-key", this.accessKey);
+                signature = makeSendResultSignature(time, messageId);
+                headers.set("x-ncp-apigw-signature-v2", signature);
+                httpEntity = new HttpEntity<>("", headers);
+                restTemplate = new RestTemplate();
+                restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler()); // ResponseErrorHandler 인터페이스를 재 구현한 클래스로 설정
+                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+                responseEntity = restTemplate.exchange(
+                        "https://sens.apigw.ntruss.com/alimtalk/v2/services/" + this.serviceId + "/messages/" + messageId,
+                        HttpMethod.GET,
+                        httpEntity,
+                        AlimtalkResultResponseBody.class
+                );
+
+                if (responseEntity.getStatusCodeValue() == 200) {
+                    break;
+                }
+
+                count++;
+            }
+        }
 
         return responseEntity.getBody();
     }
